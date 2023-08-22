@@ -3,7 +3,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-int is_equal(char*, char*);
 struct Person 
 {
   char *name;
@@ -35,39 +34,28 @@ void Person_destroy(struct Person *who)
 
 void Person_print(struct Person *who)
 {
-  char *name = (char*)&(*who);
+  printf("Person\t@[%p(%ld)]:\n", who, sizeof(*who));
+  // Get values from pointers as a challenge
 
-  int *age = (int*)((char*)who + 8);
-  int *height = &(who->height);
-  int *weight = &(who->weight);
+  // Type cast double pointer to assert appropriate  size 
+  // so that the correct value is read
+  
+  char *name = *((char**)who); // == who->name
 
-  printf("\nName@[%p(%ld)]: %s\n", name, sizeof(name), name);
-  printf("\tAge@[%p(%ld)]: %i\n", age, sizeof(*age), *age); 
-  printf("\tHeight@[%p(%ld)]: %d\n", height, sizeof(*height), *height);
-  printf("\tWeight@[%p(%ld)]: %d\n", weight, sizeof(*weight), *weight);
+  // Person pointer is converted to char pointer
+  // to allow for byte size memory offsets.
 
-//  is_equal(name, who->name);
-}
+  int *age = (int*)((char*)who + 8); // == who->age
+  int *height = (int*)((char*)who + 12); // == who->height
+  int *weight = (int*)((char*)who + 16); // == who-> weight
 
-int is_equal(char *str0, char *str1)
-{
-  int outcome = 1;
-  int i = 0;
-  printf("\n--- str test ---\n");
-  printf("\nstr0@[%p(%ld)]: %s\n", str0, sizeof(str0), str0);
-  printf("str1@[%p(%ld)]: %s\n", str1, sizeof(str1), str1);
-
-  while(outcome)
-  {
-    outcome = str0[i] == str1[i];
-    printf("\n\t[%i]", i);
-
-    printf("\tstr0@[%p(%ld)]: %c", &str0[i], sizeof(str0[i]), str0[i]);
-    printf("\tstr1@[%p(%ld)]: %c\n", &str1[i], sizeof(str1[i]), str1[i]);
-    i++;
-  }
-  printf("\nname == who->name : %i\n", outcome);
-  return outcome;
+  // Notice how the addresses are together in memory
+  // and are distanced consistent with their size.
+  
+  printf("Name\t@[%p(%ld)]:\t%s\n", name, sizeof(name), name);
+  printf("Age\t@[%p(%ld)]:\t%i\n", age, sizeof(*age), *age); 
+  printf("Height\t@[%p(%ld)]:\t%d\n", height, sizeof(*height), *height);
+  printf("Weight\t@[%p(%ld)]:\t%d\n\n", weight, sizeof(*weight), *weight);
 }
 
 int main(int argc, char *argv[])
@@ -75,11 +63,7 @@ int main(int argc, char *argv[])
   struct Person *joe = Person_create("Joe Alex", 32, 64, 140);
   struct Person *frank = Person_create("Frank Blank", 20, 72, 180);
 
-  printf("@[%p(%ld)]: %s\n", joe, sizeof(*joe), (char*)*joe);
-//  Person_print(joe);
-  
-  printf("\tjoe->name@[%p(%ld)]: %s", &joe->name, sizeof(joe->name), joe->name);
-//  printf("@[%p(%ld)]:\n", frank, sizeof(*frank));
+  Person_print(joe);
   Person_print(frank);
 
   joe->age += 20;
