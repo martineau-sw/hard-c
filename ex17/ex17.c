@@ -134,11 +134,11 @@ void Database_set(struct Connection *connection, int id, const char *name, const
 
   address->set = 1;
 
-  char *res = strncpy(address->name, name, MAX_DATA);
+  char *res = strcpy(address->name, name);
 
   if(!res) die("Name copy failed");
 
-  res = strncpy(address->email, email, MAX_DATA);
+  res = strcpy(address->email, email);
 
   if(!res) die("Name copy failed");
 }
